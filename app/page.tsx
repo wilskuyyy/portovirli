@@ -469,7 +469,7 @@ export default function VirliPortfolio() {
 
             <div className="flex flex-col gap-3">
               <a
-                href="https://upwork.com/freelancers/your-profile-link"
+                href="https://upwork.com/freelancers/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 bg-[#14a800] text-white text-xs font-bold py-3 rounded-lg hover:opacity-90 transition-opacity shadow-sm"
@@ -478,7 +478,7 @@ export default function VirliPortfolio() {
               </a>
 
               <a
-                href="https://linkedin.com/in/your-profile-link"
+                href="https://linkedin.com/virligaluh"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 bg-[#0a66c2] text-white text-xs font-bold py-3 rounded-lg hover:opacity-90 transition-opacity shadow-sm"
@@ -487,7 +487,7 @@ export default function VirliPortfolio() {
               </a>
 
               <a
-                href="mailto:email@example.com"
+                href="mailto:halovirli@gmail.com"
                 className="w-full flex items-center justify-center gap-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-salmon-400 transition-colors"
               >
                 <Mail size={16} /> Send an Email
