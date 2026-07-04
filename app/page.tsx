@@ -6,7 +6,7 @@ import {
   ArrowUpRight,
   Briefcase,
   CheckCircle,
-  ClipboardList, // <-- Ini yang ditambahkan untuk mengatasi error
+  ClipboardList,
   Clock,
   Cpu,
   Database,
@@ -143,6 +143,10 @@ export default function VirliPortfolio() {
                   <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                     <Globe size={14} className="text-salmon-500" /> English (C1)
                   </div>
+                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                    <Zap size={14} className="text-salmon-500" /> Responds in
+                    &lt; 2 hours
+                  </div>
                 </div>
 
                 {/* CTA - SINGLE PRIMARY FOCUS */}
@@ -177,7 +181,7 @@ export default function VirliPortfolio() {
             </div>
           </Card>
 
-          {/* FEATURED CASE STUDIES */}
+          {/* FEATURED CASE STUDIES (Replaced generic portfolio) */}
           <Card
             id="portfolio"
             className="bg-transparent border-none shadow-none p-0!"
@@ -444,6 +448,10 @@ export default function VirliPortfolio() {
           {/* AI PRODUCTIVITY */}
           <Card>
             <SectionTitle title="AI Workflow" />
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+              I use AI tools to speed up research and drafting, always paired
+              with strict human review for accuracy.
+            </p>
             <div className="grid grid-cols-3 gap-2">
               <LocalLogo icon={Terminal} name="ChatGPT" />
               <LocalLogo icon={MessageSquare} name="Claude" />
