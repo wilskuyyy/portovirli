@@ -30,6 +30,14 @@ import {
 
 export default function VirliPortfolio() {
   const [isDark, setIsDark] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyEmail = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigator.clipboard.writeText("halovirli@gmail.com");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Tulisan "Copied!" hilang setelah 2 detik
+  };
 
   useEffect(() => {
     if (isDark) {
@@ -478,7 +486,7 @@ export default function VirliPortfolio() {
               </a>
 
               <a
-                href="https://linkedin.com/virligaluh"
+                href="https://linkedin.com/in/virligaluh"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 bg-[#0a66c2] text-white text-xs font-bold py-3 rounded-lg hover:opacity-90 transition-opacity shadow-sm"
@@ -486,12 +494,17 @@ export default function VirliPortfolio() {
                 <Globe size={16} /> Connect on LinkedIn
               </a>
 
-              <a
-                href="mailto:halovirli@gmail.com"
-                className="w-full flex items-center justify-center gap-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-salmon-400 transition-colors"
+              <button
+                onClick={handleCopyEmail}
+                className="w-full flex items-center justify-center gap-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-salmon-400 transition-colors cursor-pointer"
               >
-                <Mail size={16} /> Send an Email
-              </a>
+                {copied ? (
+                  <CheckCircle size={16} className="text-green-500" />
+                ) : (
+                  <Mail size={16} />
+                )}
+                {copied ? "Email Copied!" : "halovirli@gmail.com"}
+              </button>
             </div>
           </Card>
         </div>
