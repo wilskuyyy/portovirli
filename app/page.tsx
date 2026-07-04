@@ -1,406 +1,343 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import {
-  BarChart3,
-  CheckCircle2,
-  Clock,
-  Languages,
-  Moon,
-  Sun,
-  Search,
-  MapPin,
-  Globe,
-  Mail,
-  CheckCircle,
   Briefcase,
+  Calendar,
+  CheckCircle,
+  ClipboardList,
+  Clock,
+  Cpu,
   Database,
-  MessageSquareShare,
-  ArrowLeft,
-  PieChart,
-  TrendingUp,
-  LineChart,
-  Target,
-  Coffee,
-  Map,
-  Lightbulb,
-  ShieldAlert,
+  FileSpreadsheet,
+  FileText,
+  Headset,
+  Laptop,
+  LayoutDashboard,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Moon,
+  Search,
+  ShieldCheck,
+  Sun,
+  Terminal,
+  UserCheck,
+  Zap,
 } from "lucide-react";
 
-// ============================================================================
-// KAMUS BAHASA (BILINGUAL & DATA)
-// ============================================================================
-const dict = {
-  id: {
-    // Nav & General
-    timezone: "Tersedia untuk EST/PST",
-    english: "Bahasa Inggris C1",
-    hireMe: "Rekrut Saya di Upwork",
-    contactMe: "Email Saya",
-    backHome: "Kembali ke Beranda Pilihan",
-
-    // Landing Page
-    welcome: "Pilih Ruang Kerja",
-    welcomeSub:
-      "Pilih jalur keahlian di bawah ini untuk melihat portofolio spesifik yang sesuai dengan kebutuhan bisnis Anda.",
-    cardAdminTitle: "Admin & Virtual Assistant",
-    cardAdminDesc:
-      "Manajemen data akurat, dasbor Excel, pelacakan penjualan, dan dukungan administratif harian.",
-    cardResearchTitle: "Market Research & Analysis",
-    cardResearchDesc:
-      "Pemetaan pasar, analisis kompetitor (SWOT), dan rekomendasi strategi bisnis berbasis data.",
-
-    // Admin View
-    adminRole: "Spesialis Entri Data & Asisten Virtual",
-    adminDesc:
-      "Profesional administratif yang sangat teliti dengan fokus pada manajemen data yang akurat, pelaporan Excel, dan efisiensi alur kerja. Berkomitmen pada 0% tingkat kesalahan.",
-    tabAdmin1: "Manajemen Data",
-    tabAdmin2: "Tools & CRM",
-    dashTitle: "Dasbor Interaktif Penjualan",
-    searchPlaceholder: "Cari pelanggan...",
-    allStatus: "Semua Status",
-    crmTitle: "Penguasaan Ekosistem Digital",
-    crmDesc:
-      "Mampu beradaptasi dengan cepat menggunakan berbagai perangkat lunak manajemen proyek dan CRM modern untuk mendukung operasional tim global.",
-
-    adminData: [
-      {
-        id: "CUS-001",
-        name: "PT Maju Bersama",
-        segmen: "Corporate",
-        nilai: "Rp 4.500.000",
-        status: "Completed",
-      },
-      {
-        id: "CUS-002",
-        name: "Budi Santoso",
-        segmen: "Individual",
-        nilai: "Rp 750.000",
-        status: "Pending",
-      },
-      {
-        id: "CUS-003",
-        name: "CV Prima Sejahtera",
-        segmen: "SME",
-        nilai: "Rp 2.800.000",
-        status: "Completed",
-      },
-      {
-        id: "CUS-004",
-        name: "Ahmad Fauzi",
-        segmen: "Individual",
-        nilai: "Rp 750.000",
-        status: "Overdue",
-      },
-      {
-        id: "CUS-005",
-        name: "Global Tech Inc.",
-        segmen: "Corporate",
-        nilai: "Rp 8.200.000",
-        status: "Pending",
-      },
-      {
-        id: "CUS-006",
-        name: "Diana Retail",
-        segmen: "SME",
-        nilai: "Rp 1.500.000",
-        status: "Completed",
-      },
-    ],
-
-    // Research View
-    researchRole: "Spesialis Riset Pasar & Analis Kompetitor",
-    researchDesc:
-      "Ahli dalam mengekstraksi data industri, memetakan lanskap kompetitor, dan menyusun laporan intelijen pasar untuk mendorong keputusan bisnis yang strategis.",
-    tabRes1: "Overview Pasar",
-    tabRes2: "Data Kompetitor",
-    tabRes3: "SWOT & Strategi",
-    resCaseStudy: "Studi Kasus: Lanskap Bisnis Kopi Susu Surabaya (2025)",
-
-    resOverview: [
-      {
-        title: "Pertumbuhan Budget-Mid",
-        desc: "Pasar kopi harga Rp 10k-25k tumbuh cepat, didorong populasi mahasiswa dan pekerja muda Surabaya.",
-      },
-      {
-        title: "Hyper-Lokalisasi Area",
-        desc: "Konsumen Surabaya Timur, Barat, & Utara berbeda. Outlet di residensial punya loyalitas lebih tinggi dari mal.",
-      },
-      {
-        title: "Tren Clean Label",
-        desc: "Brand yang transparan menggunakan gula aren asli & susu lokal Jatim mendapat ulasan jauh lebih positif.",
-      },
-    ],
-
-    resCompetitors: [
-      {
-        brand: "Kopi Kenangan",
-        segment: "Mid–High",
-        price: "Rp 25k–45k",
-        pro: "Brand kuat, App loyalty",
-        con: "Kualitas tidak konsisten",
-        rating: "⭐ 4.3",
-      },
-      {
-        brand: "Janji Jiwa",
-        segment: "Mid–High",
-        price: "Rp 20k–40k",
-        pro: "Pairing roti, emosional",
-        con: "Ketergantungan mal",
-        rating: "⭐ 4.4",
-      },
-      {
-        brand: "Fore Coffee",
-        segment: "Mid–High",
-        price: "Rp 28k–55k",
-        pro: "Desain premium, inovatif",
-        con: "Harga kurang terjangkau",
-        rating: "⭐ 4.2",
-      },
-      {
-        brand: "Tuku",
-        segment: "Mid",
-        price: "Rp 18k–32k",
-        pro: "Comfort food, viral",
-        con: "Outlet sangat terbatas",
-        rating: "⭐ 4.5",
-      },
-      {
-        brand: "Kulo",
-        segment: "Mid",
-        price: "Rp 12k–22k",
-        pro: "Ekspansi cepat, murah",
-        con: "Kualitas standar",
-        rating: "⭐ 4.1",
-      },
-    ],
-
-    resSwot: {
-      S: [
-        "Demand pasar terbukti besar, tidak perlu edukasi",
-        "Loyalitas tinggi pada brand lokal Surabaya",
-        "Biaya masuk awal rendah (booth/gerobak)",
-      ],
-      W: [
-        "Brand awareness nol di awal",
-        "Sulit menjaga konsistensi rasa saat ekspansi",
-        "Modal terbatas untuk lokasi premium",
-      ],
-      O: [
-        "Celah di harga Rp 15k-25k dengan kualitas baik",
-        "Area suburban belum tersentuh brand mapan",
-        "Potensi viral organik via TikTok lokal",
-      ],
-      T: [
-        "Perang harga sangat intens di bawah Rp 10k",
-        "Saturasi di pusat kota Surabaya",
-        "Algoritma GoFood/GrabFood tidak stabil",
-      ],
-    },
-
-    resStrategy:
-      "Pasar Surabaya masih terbuka lebar untuk segmen mid-quality (Rp 15k-25k). Rekomendasi utama: bangun identitas 'Kopi Arek Suroboyo', fokus penetrasi awal di area suburban residensial (bukan mal), dan optimalkan TikTok-First Strategy untuk menekan biaya akuisisi pelanggan awal.",
-
-    // CTA
-    ctaTitle: "Siap Mengoptimalkan Bisnis Anda?",
-    ctaDesc:
-      "Mari diskusikan bagaimana saya dapat membantu mengelola tugas administratif atau menyediakan data riset akurat untuk perusahaan Anda.",
+// ==========================================
+// DATABASE 50 DUMMY TESTIMONIALS
+// ==========================================
+const testimonialsData = [
+  {
+    id: 1,
+    name: "Sarah W.",
+    text: "Virli's data entry is flawless. She organized our messy CRM in just two days. Highly recommended!",
+    color: "bg-salmon-200",
   },
-  en: {
-    // Nav & General
-    timezone: "Available for EST/PST",
-    english: "Fluent English (C1)",
-    hireMe: "Hire Me on Upwork",
-    contactMe: "Email Me",
-    backHome: "Back to Portfolio Selection",
-
-    // Landing Page
-    welcome: "Select Workspace",
-    welcomeSub:
-      "Please select an expertise track below to view specific portfolios tailored to your business needs.",
-    cardAdminTitle: "Admin & Virtual Assistant",
-    cardAdminDesc:
-      "Accurate data management, Excel dashboards, sales tracking, and daily administrative support.",
-    cardResearchTitle: "Market Research & Analysis",
-    cardResearchDesc:
-      "Market mapping, competitor analysis (SWOT), and data-driven business strategy recommendations.",
-
-    // Admin View
-    adminRole: "Data Entry Specialist & Virtual Assistant",
-    adminDesc:
-      "Detail-oriented administrative professional specializing in accurate data management, Excel reporting, and workflow efficiency. Committed to a 0% error rate.",
-    tabAdmin1: "Data Management",
-    tabAdmin2: "Tools & CRM",
-    dashTitle: "Interactive Sales Dashboard",
-    searchPlaceholder: "Search customer...",
-    allStatus: "All Status",
-    crmTitle: "Digital Workspace Mastery",
-    crmDesc:
-      "Highly adaptable and proficient in utilizing modern project management and CRM software to seamlessly support global remote teams.",
-
-    adminData: [
-      {
-        id: "CUS-001",
-        name: "PT Maju Bersama",
-        segmen: "Corporate",
-        nilai: "Rp 4.500.000",
-        status: "Completed",
-      },
-      {
-        id: "CUS-002",
-        name: "Budi Santoso",
-        segmen: "Individual",
-        nilai: "Rp 750.000",
-        status: "Pending",
-      },
-      {
-        id: "CUS-003",
-        name: "CV Prima Sejahtera",
-        segmen: "SME",
-        nilai: "Rp 2.800.000",
-        status: "Completed",
-      },
-      {
-        id: "CUS-004",
-        name: "Ahmad Fauzi",
-        segmen: "Individual",
-        nilai: "Rp 750.000",
-        status: "Overdue",
-      },
-      {
-        id: "CUS-005",
-        name: "Global Tech Inc.",
-        segmen: "Corporate",
-        nilai: "Rp 8.200.000",
-        status: "Pending",
-      },
-      {
-        id: "CUS-006",
-        name: "Diana Retail",
-        segmen: "SME",
-        nilai: "Rp 1.500.000",
-        status: "Completed",
-      },
-    ],
-
-    // Research View
-    researchRole: "Market Research & Competitor Analyst",
-    researchDesc:
-      "Expert at extracting industry data, mapping competitive landscapes, and compiling market intelligence reports to drive strategic business decisions.",
-    tabRes1: "Market Overview",
-    tabRes2: "Competitor Data",
-    tabRes3: "SWOT & Strategy",
-    resCaseStudy:
-      "Case Study: Coffee Shop Competitive Landscape in Surabaya (2025)",
-
-    resOverview: [
-      {
-        title: "Budget-Mid Tier Growth",
-        desc: "The Rp 10k-25k coffee market is growing rapidly, driven by Surabaya's large student and young professional population.",
-      },
-      {
-        title: "Area Hyper-Localization",
-        desc: "Consumers in East, West, & North Surabaya behave differently. Suburban outlets show higher loyalty rates than mall branches.",
-      },
-      {
-        title: "Clean Label Trend",
-        desc: "Brands transparent about using authentic palm sugar & local East Java milk receive significantly better online reviews.",
-      },
-    ],
-
-    resCompetitors: [
-      {
-        brand: "Kopi Kenangan",
-        segment: "Mid–High",
-        price: "Rp 25k–45k",
-        pro: "Strong brand, App loyalty",
-        con: "Inconsistent quality",
-        rating: "⭐ 4.3",
-      },
-      {
-        brand: "Janji Jiwa",
-        segment: "Mid–High",
-        price: "Rp 20k–40k",
-        pro: "Toast pairing, emotional tie",
-        con: "Mall dependency",
-        rating: "⭐ 4.4",
-      },
-      {
-        brand: "Fore Coffee",
-        segment: "Mid–High",
-        price: "Rp 28k–55k",
-        pro: "Premium design, innovative",
-        con: "Less affordable pricing",
-        rating: "⭐ 4.2",
-      },
-      {
-        brand: "Tuku",
-        segment: "Mid",
-        price: "Rp 18k–32k",
-        pro: "Comfort food, highly viral",
-        con: "Very limited outlets",
-        rating: "⭐ 4.5",
-      },
-      {
-        brand: "Kulo",
-        segment: "Mid",
-        price: "Rp 12k–22k",
-        pro: "Rapid expansion, cheap",
-        con: "Standard taste quality",
-        rating: "⭐ 4.1",
-      },
-    ],
-
-    resSwot: {
-      S: [
-        "Proven massive market demand, no education needed",
-        "High loyalty to authentic local Surabaya brands",
-        "Low initial barrier to entry (booth/cart model)",
-      ],
-      W: [
-        "Zero brand awareness at launch",
-        "Difficulty maintaining taste consistency during expansion",
-        "Limited capital for premium locations",
-      ],
-      O: [
-        "Market gap in the Rp 15k-25k mid-quality segment",
-        "Suburban areas remain untapped by major brands",
-        "High potential for organic virality via local TikTok",
-      ],
-      T: [
-        "Intense price war in the below Rp 10k segment",
-        "Market saturation in central Surabaya areas",
-        "Unpredictable food delivery app algorithms",
-      ],
-    },
-
-    resStrategy:
-      "The Surabaya market remains wide open for the mid-quality segment (Rp 15k-25k). Key recommendations: build a strong local 'Kopi Arek' identity, focus initial penetration on suburban residential areas rather than malls, and optimize a TikTok-First Strategy to lower early customer acquisition costs.",
-
-    // CTA
-    ctaTitle: "Ready to Streamline Your Business?",
-    ctaDesc:
-      "Let's discuss how I can help manage your administrative tasks or provide accurate research data for your company.",
+  {
+    id: 2,
+    name: "Michael T.",
+    text: "Very fast response time and excellent reporting skills on Excel. Will definitely hire again.",
+    color: "bg-blue-200",
   },
-};
+  {
+    id: 3,
+    name: "Jessica R.",
+    text: "Amazing virtual assistant! Managed my calendar and emails so I could focus on growing my business.",
+    color: "bg-green-200",
+  },
+  {
+    id: 4,
+    name: "David L.",
+    text: "Her attention to detail is unmatched. Found errors in our database that we had missed for months.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 5,
+    name: "Amanda C.",
+    text: "Super reliable and always delivers before the deadline. Great communication skills.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 6,
+    name: "Robert K.",
+    text: "Transformed our chaotic spreadsheets into a beautiful, easy-to-read Excel dashboard.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 7,
+    name: "Emily J.",
+    text: "Handles our customer support tickets with professionalism and care. Our clients love her.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 8,
+    name: "Daniel M.",
+    text: "Very efficient in internet research. Gathered all the competitor data I needed in half the time expected.",
+    color: "bg-green-200",
+  },
+  {
+    id: 9,
+    name: "Lisa P.",
+    text: "I can't imagine running my daily operations without her support now. 10/10.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 10,
+    name: "Mark H.",
+    text: "Excellent SOP documentation. She made our onboarding process so much easier for new hires.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 11,
+    name: "Sophie B.",
+    text: "Highly organized. She brought structure to our administrative workflow.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 12,
+    name: "Kevin D.",
+    text: "She is a lifesaver! Handled a massive data cleaning project smoothly with zero errors.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 13,
+    name: "Rachel G.",
+    text: "Consistently produces high-quality work. Very adaptable to our changing business needs.",
+    color: "bg-green-200",
+  },
+  {
+    id: 14,
+    name: "Thomas W.",
+    text: "Her proficiency in G-Suite and Microsoft Office is top-notch.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 15,
+    name: "Olivia F.",
+    text: "Professional, fast, and polite. Everything you want in an executive assistant.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 16,
+    name: "James C.",
+    text: "Cleans up formatting issues in Word and Excel like magic.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 17,
+    name: "Emma S.",
+    text: "Managed our team's schedule across three different time zones perfectly.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 18,
+    name: "William N.",
+    text: "Great problem solver. She figures out solutions quickly without needing constant direction.",
+    color: "bg-green-200",
+  },
+  {
+    id: 19,
+    name: "Chloe M.",
+    text: "She took over our inbox management and our response time improved by 200%.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 20,
+    name: "Andrew P.",
+    text: "I threw a very complicated data scraping task at her and she delivered perfectly formatted results.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 21,
+    name: "Mia L.",
+    text: "Very trustworthy with sensitive company information and financial records.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 22,
+    name: "Benjamin R.",
+    text: "Her pivot tables and VLOOKUP skills in Excel saved us hours of manual calculation.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 23,
+    name: "Charlotte T.",
+    text: "Always online when we need her. Very responsive on Slack and email.",
+    color: "bg-green-200",
+  },
+  {
+    id: 24,
+    name: "Lucas H.",
+    text: "Drafted professional emails and reports that made our company look great.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 25,
+    name: "Grace K.",
+    text: "Organized our messy Google Drive into a logical, easy-to-navigate system.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 26,
+    name: "Henry V.",
+    text: "She's proactive. Always asking what else she can do to help the team.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 27,
+    name: "Lily D.",
+    text: "Handled our travel arrangements and itinerary planning flawlessly.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 28,
+    name: "Alexander J.",
+    text: "A true Excel wizard. She automated reports that used to take me all weekend.",
+    color: "bg-green-200",
+  },
+  {
+    id: 29,
+    name: "Hannah W.",
+    text: "Navigates Salesforce and CRM tools easily. Very low training time needed.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 30,
+    name: "Ryan S.",
+    text: "One of the most detail-oriented freelancers I've ever worked with on Upwork.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 31,
+    name: "Ava C.",
+    text: "She treats our business like her own. Very dedicated and hardworking.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 32,
+    name: "Matthew B.",
+    text: "Great at spotting discrepancies in invoice data and fixing them promptly.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 33,
+    name: "Ella F.",
+    text: "I highly recommend her for any administrative or back-office support tasks.",
+    color: "bg-green-200",
+  },
+  {
+    id: 34,
+    name: "Jackson P.",
+    text: "She managed our lead generation database and kept everything up to date daily.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 35,
+    name: "Victoria G.",
+    text: "Excellent English communication skills, both written and verbal.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 36,
+    name: "Sebastian E.",
+    text: "She uses AI tools like ChatGPT and Notion efficiently to speed up her workflow.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 37,
+    name: "Natalie H.",
+    text: "Cleared a backlog of 500+ customer emails in record time with great satisfaction ratings.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 38,
+    name: "Joseph M.",
+    text: "Very polite when dealing with difficult clients via email support.",
+    color: "bg-green-200",
+  },
+  {
+    id: 39,
+    name: "Aria T.",
+    text: "Consolidated data from five different platforms into one seamless tracking sheet.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 40,
+    name: "Owen L.",
+    text: "She is very tech-savvy and adapts quickly to new software we introduce.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 41,
+    name: "Zoe R.",
+    text: "Her daily reports are always accurate, comprehensive, and submitted on time.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 42,
+    name: "Gabriel C.",
+    text: "Helped us streamline our data entry process, cutting down errors by 90%.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 43,
+    name: "Penelope S.",
+    text: "Fantastic work on the market research assignment. The data was exactly what we needed.",
+    color: "bg-green-200",
+  },
+  {
+    id: 44,
+    name: "Carter W.",
+    text: "Maintains a positive attitude even when tasks are repetitive and tedious.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 45,
+    name: "Riley D.",
+    text: "She handles confidential HR documents with absolute discretion and care.",
+    color: "bg-purple-200",
+  },
+  {
+    id: 46,
+    name: "Julian B.",
+    text: "Always asks the right questions to ensure she understands the task perfectly before starting.",
+    color: "bg-salmon-200",
+  },
+  {
+    id: 47,
+    name: "Nora K.",
+    text: "The cleanest data formatting I have seen. She truly takes pride in her work.",
+    color: "bg-blue-200",
+  },
+  {
+    id: 48,
+    name: "Anthony V.",
+    text: "A vital extension of our team. We rely on her for all our daily admin operations.",
+    color: "bg-green-200",
+  },
+  {
+    id: 49,
+    name: "Hazel P.",
+    text: "She goes above and beyond. Noticed a typo in a template we've used for years and fixed it.",
+    color: "bg-amber-200",
+  },
+  {
+    id: 50,
+    name: "Christian M.",
+    text: "Unbelievable value for the quality of work provided. She is an absolute star.",
+    color: "bg-purple-200",
+  },
+];
 
-export default function PortfolioPage() {
+export default function VirliPortfolio() {
   const [isDark, setIsDark] = useState(false);
-  const [lang, setLang] = useState<"id" | "en">("en");
-  const [view, setView] = useState<"landing" | "admin" | "research">("landing");
 
-  // Tabs State
-  const [activeAdminTab, setActiveAdminTab] = useState<"data" | "crm">("data");
-  const [activeResearchTab, setActiveResearchTab] = useState<
-    "overview" | "competitor" | "strategy"
-  >("overview");
-
-  // Search State
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("All");
-
-  const t = dict[lang];
+  // State untuk mengontrol expand/collapse Testimonials
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   useEffect(() => {
     if (isDark) {
@@ -410,605 +347,441 @@ export default function PortfolioPage() {
     }
   }, [isDark]);
 
-  // Framer Motion Variants untuk Animasi
   const fadeInUp: Variants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 15 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.4, ease: "easeOut" },
     },
   };
 
   const staggerContainer: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
   };
 
-  const filteredAdminData = t.adminData.filter((item) => {
-    const matchSearch = item.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchFilter = filterStatus === "All" || item.status === filterStatus;
-    return matchSearch && matchFilter;
-  });
+  const Card = ({
+    children,
+    className = "",
+    id,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+    id?: string;
+  }) => (
+    <motion.div
+      id={id}
+      variants={fadeInUp}
+      className={`bg-white dark:bg-[#150f10] border border-salmon-100 dark:border-salmon-900/40 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300 ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
 
-  // ================= KOMPONEN HEADER & CTA GLOBAL =================
-  const renderFloatingControls = () => (
-    <div className="fixed top-4 right-4 z-50 flex gap-2">
-      <button
-        onClick={() => setLang(lang === "id" ? "en" : "id")}
-        className="flex items-center gap-2 px-3 py-2 md:px-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-full shadow-md border border-salmon-200 dark:border-slate-700 text-salmon-700 dark:text-salmon-300 text-[10px] md:text-xs font-bold hover:scale-105 transition-transform"
-      >
-        <Languages size={14} />{" "}
-        <span className="hidden sm:inline">
-          {lang === "id" ? "INDONESIA" : "ENGLISH"}
-        </span>
-        <span className="sm:hidden">{lang.toUpperCase()}</span>
-      </button>
-      <button
-        onClick={() => setIsDark(!isDark)}
-        className="p-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-full shadow-md border border-salmon-200 dark:border-slate-700 text-salmon-700 dark:text-salmon-300 hover:scale-105 transition-transform"
-      >
-        {isDark ? <Sun size={16} /> : <Moon size={16} />}
-      </button>
+  const SectionTitle = ({ title }: { title: string }) => (
+    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+      {title}
+    </h3>
+  );
+
+  const LocalLogo = ({ icon: Icon, name }: { icon: any; name: string }) => (
+    <div className="flex flex-col items-center justify-center p-3 border border-slate-100 dark:border-slate-800 rounded-xl hover:border-salmon-300 transition-colors bg-slate-50/50 dark:bg-slate-900/50 aspect-square text-center">
+      <Icon
+        size={24}
+        className="text-slate-700 dark:text-slate-300 mb-2 stroke-[1.5]"
+      />
+      <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-400 leading-tight">
+        {name}
+      </span>
     </div>
   );
 
-  const renderCTA = () => (
-    <section className="py-16 md:py-20 bg-salmon-600 dark:bg-salmon-800 text-white text-center px-6 border-t-4 border-salmon-400 dark:border-salmon-900">
+  const SkillIcon = ({ icon: Icon, name }: { icon: any; name: string }) => (
+    <div className="flex flex-col items-center justify-center p-3 border border-slate-100 dark:border-slate-800 rounded-xl hover:border-salmon-300 transition-colors bg-white dark:bg-slate-900 aspect-square text-center">
+      <Icon
+        size={24}
+        className="text-slate-700 dark:text-slate-300 mb-2 stroke-[1.5]"
+      />
+      <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-400 leading-tight">
+        {name}
+      </span>
+    </div>
+  );
+
+  const scrollToPortfolio = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    const elem = document.getElementById("portfolio");
+    if (elem) elem.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <main className="min-h-screen bg-slate-50 dark:bg-[#0f0a0b] transition-colors duration-300 p-4 md:p-6 lg:p-8 font-sans">
+      {/* Floating Dark Mode Toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          onClick={() => setIsDark(!isDark)}
+          className="p-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-full shadow-sm border border-salmon-200 dark:border-salmon-800 text-salmon-600 dark:text-salmon-400 hover:scale-105 transition-transform"
+        >
+          {isDark ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+      </div>
+
       <motion.div
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={fadeInUp}
-        className="max-w-3xl mx-auto"
+        animate="visible"
+        variants={staggerContainer}
+        className="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
       >
-        <MessageSquareShare
-          size={40}
-          className="mx-auto mb-6 text-salmon-200 opacity-80"
-        />
-        <h2 className="font-serif text-3xl md:text-5xl font-bold mb-4 md:mb-6">
-          {t.ctaTitle}
-        </h2>
-        <p className="text-salmon-50 text-sm md:text-lg mb-8 md:mb-10 max-w-2xl mx-auto">
-          {t.ctaDesc}
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <button className="w-full sm:w-auto bg-white text-salmon-700 px-8 py-3.5 md:py-4 rounded-xl font-black text-base md:text-lg hover:bg-slate-100 transition-colors shadow-xl">
-            {t.hireMe}
-          </button>
-          <span className="hidden sm:block text-salmon-200">or</span>
-          <button className="w-full sm:w-auto bg-transparent border-2 border-salmon-300 text-white px-8 py-3.5 md:py-4 rounded-xl font-bold text-base md:text-lg hover:bg-salmon-700 dark:hover:bg-salmon-700 transition-colors">
-            {t.contactMe}
-          </button>
+        {/* ======================= LEFT PANEL (50%) ======================= */}
+        <div className="lg:col-span-6 flex flex-col gap-6">
+          {/* HERO SECTION */}
+          <Card className="bg-salmon-50/50 dark:bg-salmon-950/20 border-none shadow-sm relative overflow-hidden">
+            <div className="flex flex-col-reverse sm:flex-row justify-between items-center sm:items-start gap-6">
+              <div className="flex-1 pt-2 sm:pt-6">
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
+                  Hi, I'm Virli Galuh
+                </h1>
+                <h2 className="text-sm sm:text-base font-bold text-salmon-600 dark:text-salmon-400 mb-3 border-l-2 border-salmon-500 pl-3">
+                  Administrative Assistant | Virtual Assistant |<br />
+                  Customer Support | Data & Operations Specialist
+                </h2>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6 max-w-md">
+                  Helping businesses stay organized through accurate
+                  administration, efficient workflows, customer support,
+                  internet research, and data management. Committed to 0% error
+                  rate.
+                </p>
+
+                <div className="flex flex-wrap gap-3">
+                  <a
+                    href="#portfolio"
+                    onClick={scrollToPortfolio}
+                    className="inline-flex items-center justify-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold py-2.5 px-5 rounded-lg hover:bg-salmon-600 dark:hover:bg-salmon-500 transition-colors shadow-sm cursor-pointer"
+                  >
+                    View Portfolio
+                  </a>
+                  <a
+                    href="/CV-Virli-Galuh.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold py-2.5 px-5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-salmon-400 transition-colors cursor-pointer"
+                  >
+                    View CV
+                  </a>
+                  <a
+                    href="mailto:email@example.com"
+                    className="inline-flex items-center justify-center bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold py-2.5 px-5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-salmon-400 transition-colors cursor-pointer"
+                  >
+                    Contact Me
+                  </a>
+                </div>
+              </div>
+
+              {/* FOTO HERO */}
+              <div className="w-48 h-56 sm:w-56 sm:h-64 shrink-0 rounded-2xl overflow-hidden shadow-lg border-4 border-white dark:border-[#150f10] bg-salmon-100 dark:bg-salmon-900/30">
+                <img
+                  src="/profile-virli.jpg"
+                  alt="Virli Galuh"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+            </div>
+          </Card>
+
+          {/* STATS CARDS */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {[
+              { label: "Documents Managed", value: "1000+", icon: FileText },
+              { label: "Rows Processed", value: "5000+", icon: Database },
+              { label: "Tasks Completed", value: "100+", icon: ClipboardList },
+              { label: "Data Accuracy", value: "99%", icon: ShieldCheck },
+              { label: "Fast Response", value: "1 hr", icon: Clock },
+              { label: "Remote Ready", value: "Yes", icon: Laptop },
+            ].map((stat, i) => (
+              <Card
+                key={i}
+                className="p-3! text-center flex flex-col items-center justify-center"
+              >
+                <stat.icon size={18} className="text-salmon-500 mb-2" />
+                <div className="text-lg font-black text-slate-900 dark:text-white mb-0.5">
+                  {stat.value}
+                </div>
+                <div className="text-[9px] uppercase tracking-wider text-slate-500 font-bold leading-tight">
+                  {stat.label}
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* FEATURED PORTFOLIO */}
+          <Card
+            id="portfolio"
+            className="bg-transparent border-none shadow-none p-0!"
+          >
+            <SectionTitle title="Featured Portfolio" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="bg-white dark:bg-[#150f10] rounded-2xl p-4 border border-slate-100 dark:border-salmon-900/30 shadow-sm group">
+                <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl mb-4 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
+                  <img
+                    src="/portfolio-1.jpg"
+                    alt="Excel Dashboard"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">
+                  Excel Dashboard
+                </h4>
+                <p className="text-xs text-slate-500 line-clamp-2">
+                  Mockup of an interactive KPI dashboard with charts and
+                  conditional formatting.
+                </p>
+              </div>
+
+              <div className="bg-white dark:bg-[#150f10] rounded-2xl p-4 border border-slate-100 dark:border-salmon-900/30 shadow-sm group">
+                <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl mb-4 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
+                  <img
+                    src="/portfolio-2.jpg"
+                    alt="Data Cleaning"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">
+                  Data Cleaning Project
+                </h4>
+                <p className="text-xs text-slate-500 line-clamp-2">
+                  Before/after showcase of large datasets cleaned and
+                  standardized effectively.
+                </p>
+              </div>
+
+              <div className="bg-white dark:bg-[#150f10] rounded-2xl p-4 border border-slate-100 dark:border-salmon-900/30 shadow-sm group">
+                <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800 rounded-xl mb-4 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
+                  <img
+                    src="/portfolio-3.jpg"
+                    alt="Admin Docs"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">
+                  Administrative Docs
+                </h4>
+                <p className="text-xs text-slate-500 line-clamp-2">
+                  Examples of organized filing systems, professional quotations,
+                  and reports.
+                </p>
+              </div>
+
+              <div className="bg-white dark:bg-[#150f10] rounded-2xl p-4 border border-slate-100 dark:border-salmon-900/30 shadow-sm group">
+                <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800 rounded-xl mb-4 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
+                  <img
+                    src="/portfolio-4.jpg"
+                    alt="CRM"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">
+                  Customer Support CRM
+                </h4>
+                <p className="text-xs text-slate-500 line-clamp-2">
+                  Handling tickets, email interactions, and maintaining customer
+                  satisfaction.
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* ======================= CENTER PANEL (25%) ======================= */}
+        <div className="lg:col-span-3 flex flex-col gap-6">
+          {/* TRUST INDICATORS */}
+          <Card>
+            <SectionTitle title="Trust Indicators" />
+            <div className="grid grid-cols-3 gap-2">
+              <SkillIcon icon={UserCheck} name="Admin Support" />
+              <SkillIcon icon={Briefcase} name="Executive Asst." />
+              <SkillIcon icon={Headset} name="Virtual Asst." />
+              <SkillIcon icon={Calendar} name="Calendar Mgt." />
+              <SkillIcon icon={Mail} name="Email Mgt." />
+              <SkillIcon icon={Search} name="Market Research" />
+            </div>
+          </Card>
+
+          {/* CORE SKILLS */}
+          <Card>
+            <SectionTitle title="Core Skills" />
+            <div className="grid grid-cols-3 gap-2">
+              <SkillIcon icon={MessageSquare} name="Customer Svc" />
+              <SkillIcon icon={Database} name="Data Entry" />
+              <SkillIcon icon={FileSpreadsheet} name="Excel Mastery" />
+              <SkillIcon icon={LayoutDashboard} name="Data Viz" />
+              <SkillIcon icon={FileText} name="Documentation" />
+              <SkillIcon icon={ClipboardList} name="Report Prep" />
+              <SkillIcon icon={ShieldCheck} name="QA / Audit" />
+              <SkillIcon icon={Clock} name="Scheduling" />
+              <SkillIcon icon={CheckCircle} name="SOP Creation" />
+            </div>
+          </Card>
+
+          {/* TESTIMONIALS (WITH 50 DUMMY DATA) */}
+          <Card className="flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                Testimonials
+              </h3>
+              <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 px-2.5 py-1.5 rounded-md text-[10px] font-extrabold border border-amber-100 dark:border-amber-900/30">
+                ⭐ 4.8 (50)
+              </div>
+            </div>
+
+            {/* Scrollable Container jika di-expand */}
+            <div
+              className={`space-y-3 pr-1 transition-all duration-300 ${
+                showAllReviews
+                  ? "max-h-[400px] overflow-y-auto"
+                  : "max-h-fit overflow-hidden"
+              }`}
+              style={{ scrollbarWidth: "thin" }}
+            >
+              {(showAllReviews
+                ? testimonialsData
+                : testimonialsData.slice(0, 2)
+              ).map((rev) => (
+                <div
+                  key={rev.id}
+                  className="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-salmon-200 transition-colors"
+                >
+                  <p className="text-[10px] text-slate-600 dark:text-slate-400 italic mb-2 leading-relaxed">
+                    "{rev.text}"
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-5 h-5 rounded-full ${rev.color}`}></div>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">
+                      {rev.name}
+                    </span>
+                    <span className="text-[9px] font-semibold text-green-600 dark:text-green-500 ml-auto flex items-center gap-0.5">
+                      <CheckCircle size={10} /> Verified
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setShowAllReviews(!showAllReviews)}
+              className="w-full mt-3 py-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:text-salmon-600 dark:hover:text-salmon-400 hover:bg-slate-50 dark:bg-slate-900/50 rounded-lg transition-colors flex items-center justify-center gap-1.5 border border-transparent hover:border-salmon-100 dark:hover:border-salmon-900/50"
+            >
+              {showAllReviews ? "Show Less ↑" : "Read 48 other reviews →"}
+            </button>
+          </Card>
+        </div>
+
+        {/* ======================= RIGHT PANEL (25%) ======================= */}
+        <div className="lg:col-span-3 flex flex-col gap-6">
+          {/* AI PRODUCTIVITY */}
+          <Card>
+            <SectionTitle title="AI Productivity" />
+            <div className="grid grid-cols-3 gap-2">
+              <LocalLogo icon={Terminal} name="ChatGPT" />
+              <LocalLogo icon={MessageSquare} name="Claude" />
+              <LocalLogo icon={Zap} name="Gemini" />
+              <LocalLogo icon={Cpu} name="Copilot" />
+              <LocalLogo icon={Search} name="Perplexity" />
+              <LocalLogo icon={FileText} name="Notion AI" />
+            </div>
+          </Card>
+
+          {/* SOFTWARE */}
+          <Card>
+            <SectionTitle title="Software" />
+            <div className="grid grid-cols-4 gap-2">
+              <LocalLogo icon={FileSpreadsheet} name="Excel" />
+              <LocalLogo icon={FileText} name="Word" />
+              <LocalLogo icon={LayoutDashboard} name="PPT" />
+              <LocalLogo icon={Mail} name="Outlook" />
+              <LocalLogo icon={Briefcase} name="G-Suite" />
+              <LocalLogo icon={ClipboardList} name="Trello" />
+              <LocalLogo icon={CheckCircle} name="Asana" />
+              <LocalLogo icon={MessageSquare} name="Slack" />
+              <LocalLogo icon={Headset} name="Zoom" />
+              <LocalLogo icon={Laptop} name="Canva" />
+              <LocalLogo icon={Database} name="CRM" />
+              <LocalLogo icon={Mail} name="Mailchimp" />
+            </div>
+          </Card>
+
+          {/* WHY HIRE ME */}
+          <Card>
+            <SectionTitle title="Why Hire Me" />
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 px-3 py-2 bg-salmon-50 dark:bg-salmon-900/20 text-salmon-700 dark:text-salmon-400 rounded-lg text-xs font-bold">
+                <CheckCircle size={14} /> Detail-Oriented
+              </div>
+              <div className="flex items-center gap-2 px-3 py-2 bg-salmon-50 dark:bg-salmon-900/20 text-salmon-700 dark:text-salmon-400 rounded-lg text-xs font-bold">
+                <CheckCircle size={14} /> Fast Learner
+              </div>
+              <div className="flex items-center gap-2 px-3 py-2 bg-salmon-50 dark:bg-salmon-900/20 text-salmon-700 dark:text-salmon-400 rounded-lg text-xs font-bold">
+                <CheckCircle size={14} /> Highly Organized
+              </div>
+            </div>
+          </Card>
+
+          {/* CONTACT FORM */}
+          <Card className="flex-1">
+            <SectionTitle title="Contact" />
+            <form
+              action="mailto:email@example.com"
+              method="post"
+              encType="text/plain"
+              className="flex flex-col gap-3"
+            >
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  required
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-salmon-400"
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  required
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-salmon-400"
+                />
+              </div>
+              <input
+                type="text"
+                placeholder="Company"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-salmon-400"
+              />
+              <textarea
+                placeholder="Message"
+                rows={3}
+                required
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-salmon-400 resize-none"
+              ></textarea>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <button
+                  type="submit"
+                  className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold py-2.5 rounded-lg hover:bg-salmon-600 transition-colors"
+                >
+                  Hire Me
+                </button>
+                <a
+                  href="/CV-Virli-Galuh.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-salmon-400 transition-colors text-center cursor-pointer"
+                >
+                  View CV
+                </a>
+              </div>
+            </form>
+          </Card>
         </div>
       </motion.div>
-    </section>
+    </main>
   );
-
-  const renderProfileHeader = (role: string, desc: string) => (
-    <section className="relative pt-8 pb-12 md:pt-12 md:pb-16 px-4 md:px-12 lg:px-20 bg-white dark:bg-slate-900 border-b border-salmon-100 dark:border-slate-800">
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-32 h-32 md:w-48 md:h-48 shrink-0 rounded-full bg-linear-to-br from-salmon-300 to-salmon-500 p-1 shadow-xl"
-        >
-          <div className="w-full h-full rounded-full bg-salmon-50 dark:bg-slate-800 border-4 border-white dark:border-slate-900 flex items-center justify-center overflow-hidden">
-            <span className="text-3xl md:text-4xl font-serif font-bold text-salmon-400">
-              VK
-            </span>
-          </div>
-        </motion.div>
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
-          className="text-center md:text-left flex-1"
-        >
-          <h1 className="font-serif text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-2 md:mb-3">
-            VIRLI GALUH KINANTI
-          </h1>
-          <h2 className="text-base md:text-xl text-salmon-600 font-semibold mb-3 md:mb-4">
-            {role}
-          </h2>
-          <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl text-sm md:text-base leading-relaxed">
-            {desc}
-          </p>
-          <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-3">
-            <span className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-full text-[10px] md:text-xs font-semibold">
-              <Globe size={14} className="text-blue-500" /> {t.timezone}
-            </span>
-            <span className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-full text-[10px] md:text-xs font-semibold">
-              <CheckCircle size={14} className="text-green-500" /> {t.english}
-            </span>
-            <span className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-full text-[10px] md:text-xs font-semibold">
-              <MapPin size={14} className="text-salmon-500" /> Remote ID
-            </span>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-
-  // ================= TAMPILAN 1: LANDING PAGE =================
-  if (view === "landing") {
-    return (
-      <main className="min-h-screen bg-salmon-50/30 dark:bg-slate-950 flex flex-col justify-center items-center px-4 md:px-6 py-20 transition-colors duration-300">
-        {renderFloatingControls()}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="text-center max-w-4xl mx-auto w-full"
-        >
-          <motion.h2
-            variants={fadeInUp}
-            className="text-salmon-500 font-bold tracking-widest uppercase mb-3 text-xs md:text-sm"
-          >
-            VIRLI GALUH KINANTI
-          </motion.h2>
-          <motion.h1
-            variants={fadeInUp}
-            className="font-serif text-3xl md:text-6xl text-slate-900 dark:text-white mb-4 md:mb-6 leading-tight"
-          >
-            {t.welcome}
-          </motion.h1>
-          <motion.p
-            variants={fadeInUp}
-            className="text-slate-600 dark:text-slate-400 text-sm md:text-lg mb-10 md:mb-12 max-w-xl mx-auto px-2"
-          >
-            {t.welcomeSub}
-          </motion.p>
-
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8 w-full px-2">
-            <motion.div
-              variants={fadeInUp}
-              whileHover={{ y: -8 }}
-              onClick={() => setView("admin")}
-              className="cursor-pointer bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 hover:border-salmon-400 rounded-3xl p-6 md:p-8 text-left shadow-lg shadow-salmon-100/50 dark:shadow-none transition-all group"
-            >
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-salmon-100 dark:bg-salmon-900/30 text-salmon-600 rounded-2xl flex items-center justify-center mb-5 md:mb-6 group-hover:scale-110 transition-transform">
-                <Briefcase size={28} />
-              </div>
-              <h3 className="font-serif text-xl md:text-2xl text-slate-900 dark:text-white mb-2 md:mb-3">
-                {t.cardAdminTitle}
-              </h3>
-              <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
-                {t.cardAdminDesc}
-              </p>
-            </motion.div>
-            <motion.div
-              variants={fadeInUp}
-              whileHover={{ y: -8 }}
-              onClick={() => setView("research")}
-              className="cursor-pointer bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 hover:border-salmon-400 rounded-3xl p-6 md:p-8 text-left shadow-lg shadow-salmon-100/50 dark:shadow-none transition-all group"
-            >
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-salmon-100 dark:bg-salmon-900/30 text-salmon-600 rounded-2xl flex items-center justify-center mb-5 md:mb-6 group-hover:scale-110 transition-transform">
-                <PieChart size={28} />
-              </div>
-              <h3 className="font-serif text-xl md:text-2xl text-slate-900 dark:text-white mb-2 md:mb-3">
-                {t.cardResearchTitle}
-              </h3>
-              <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm leading-relaxed">
-                {t.cardResearchDesc}
-              </p>
-            </motion.div>
-          </div>
-        </motion.div>
-      </main>
-    );
-  }
-
-  // ================= TAMPILAN 2: ADMIN & VA =================
-  if (view === "admin") {
-    return (
-      <main className="min-h-screen bg-salmon-50/30 dark:bg-slate-950 transition-colors duration-300">
-        {renderFloatingControls()}
-        <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 pt-16 md:pt-6 pb-2 px-4 md:px-12 lg:px-20">
-          <button
-            onClick={() => setView("landing")}
-            className="flex items-center gap-2 text-xs md:text-sm font-bold text-slate-500 hover:text-salmon-600 transition-colors"
-          >
-            <ArrowLeft size={16} /> {t.backHome}
-          </button>
-        </div>
-        {renderProfileHeader(t.adminRole, t.adminDesc)}
-
-        <section className="max-w-5xl mx-auto px-4 md:px-12 lg:px-20 py-10 md:py-16">
-          <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-8 md:mb-10 border-b border-slate-200 dark:border-slate-800 pb-4">
-            {[
-              { id: "data", label: t.tabAdmin1, icon: Database },
-              { id: "crm", label: t.tabAdmin2, icon: CheckCircle2 },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveAdminTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 md:px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all ${activeAdminTab === tab.id ? "bg-salmon-100 dark:bg-salmon-900/40 text-salmon-700 dark:text-salmon-300" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"}`}
-              >
-                <tab.icon size={16} /> {tab.label}
-              </button>
-            ))}
-          </div>
-
-          <AnimatePresence mode="wait">
-            {activeAdminTab === "data" && (
-              <motion.div
-                key="data"
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, y: -10 }}
-                variants={fadeInUp}
-                className="space-y-6"
-              >
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <h3 className="font-serif text-xl md:text-2xl dark:text-white">
-                    {t.dashTitle}
-                  </h3>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
-                  <div className="relative flex-1 w-full">
-                    <Search
-                      className="absolute left-3 top-2.5 text-slate-400"
-                      size={16}
-                    />
-                    <input
-                      type="text"
-                      placeholder={t.searchPlaceholder}
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white"
-                    />
-                  </div>
-                  <select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className="w-full sm:w-48 px-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg text-sm dark:text-white"
-                  >
-                    <option value="All">{t.allStatus}</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Overdue">Overdue</option>
-                  </select>
-                </div>
-
-                <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm w-full overflow-x-auto">
-                  <table className="w-full min-w-[500px] text-sm text-left">
-                    <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 uppercase font-bold text-[10px] md:text-xs">
-                      <tr>
-                        <th className="px-4 md:px-6 py-4">ID</th>
-                        <th className="px-4 md:px-6 py-4">Name</th>
-                        <th className="px-4 md:px-6 py-4">Value</th>
-                        <th className="px-4 md:px-6 py-4">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                      {filteredAdminData.map((row) => (
-                        <tr
-                          key={row.id}
-                          className="hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                        >
-                          <td className="px-4 md:px-6 py-3 font-semibold dark:text-white whitespace-nowrap">
-                            {row.id}
-                          </td>
-                          <td className="px-4 md:px-6 py-3 whitespace-nowrap">
-                            {row.name}
-                          </td>
-                          <td className="px-4 md:px-6 py-3 whitespace-nowrap">
-                            {row.nilai}
-                          </td>
-                          <td className="px-4 md:px-6 py-3 whitespace-nowrap">
-                            <span
-                              className={`px-2.5 py-1 rounded-full text-[10px] md:text-xs font-bold ${row.status === "Completed" ? "bg-green-100 text-green-700" : row.status === "Pending" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}
-                            >
-                              {row.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </motion.div>
-            )}
-
-            {/* TAB TOOLS & CRM YANG DITAMBAHKAN KEMBALI */}
-            {activeAdminTab === "crm" && (
-              <motion.div
-                key="crm"
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, y: -10 }}
-                variants={staggerContainer}
-                className="space-y-6"
-              >
-                <motion.div variants={fadeInUp} className="flex flex-col gap-2">
-                  <h3 className="font-serif text-xl md:text-2xl dark:text-white">
-                    {t.crmTitle}
-                  </h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-3xl">
-                    {t.crmDesc}
-                  </p>
-                </motion.div>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-6">
-                  {[
-                    "Google Workspace",
-                    "Microsoft Excel 365",
-                    "Notion",
-                    "Trello",
-                    "Asana",
-                    "Slack",
-                    "Canva",
-                    "Google Meet / Zoom",
-                    "Mailchimp",
-                  ].map((tool) => (
-                    <motion.div
-                      variants={fadeInUp}
-                      key={tool}
-                      className="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:border-salmon-400 transition-colors"
-                    >
-                      <div className="w-2 h-2 rounded-full bg-salmon-500 shrink-0"></div>
-                      <span className="font-semibold text-slate-800 dark:text-slate-200 text-xs md:text-sm">
-                        {tool}
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </section>
-        {renderCTA()}
-      </main>
-    );
-  }
-
-  // ================= TAMPILAN 3: MARKET RESEARCH =================
-  if (view === "research") {
-    return (
-      <main className="min-h-screen bg-salmon-50/30 dark:bg-slate-950 transition-colors duration-300">
-        {renderFloatingControls()}
-        <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 pt-16 md:pt-6 pb-2 px-4 md:px-12 lg:px-20">
-          <button
-            onClick={() => setView("landing")}
-            className="flex items-center gap-2 text-xs md:text-sm font-bold text-slate-500 hover:text-salmon-600 transition-colors"
-          >
-            <ArrowLeft size={16} /> {t.backHome}
-          </button>
-        </div>
-        {renderProfileHeader(t.researchRole, t.researchDesc)}
-
-        <section className="max-w-5xl mx-auto px-4 md:px-12 lg:px-20 py-10 md:py-16">
-          <div className="mb-8 md:mb-10 p-5 md:p-6 bg-salmon-100/50 dark:bg-slate-800 rounded-2xl border border-salmon-200 dark:border-slate-700">
-            <h3 className="font-serif text-lg md:text-2xl text-slate-900 dark:text-white mb-2 flex items-center gap-2 md:gap-3">
-              <Coffee className="text-salmon-500 shrink-0" /> {t.resCaseStudy}
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300 text-xs md:text-sm leading-relaxed">
-              Methodology: Online Desk Research. Location Target: Surabaya City
-              & Suburbs.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-8 md:mb-10 border-b border-slate-200 dark:border-slate-800 pb-4">
-            {[
-              { id: "overview", label: t.tabRes1, icon: Map },
-              { id: "competitor", label: t.tabRes2, icon: BarChart3 },
-              { id: "strategy", label: t.tabRes3, icon: Target },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveResearchTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 md:px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all ${activeResearchTab === tab.id ? "bg-salmon-100 dark:bg-salmon-900/40 text-salmon-700 dark:text-salmon-300" : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"}`}
-              >
-                <tab.icon size={16} /> {tab.label}
-              </button>
-            ))}
-          </div>
-
-          <AnimatePresence mode="wait">
-            {/* --- RES TAB 1: OVERVIEW --- */}
-            {activeResearchTab === "overview" && (
-              <motion.div
-                key="overview"
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, y: -10 }}
-                variants={staggerContainer}
-                className="space-y-6"
-              >
-                <div className="grid md:grid-cols-3 gap-4">
-                  {t.resOverview.map((item, i) => (
-                    <motion.div
-                      key={i}
-                      variants={fadeInUp}
-                      className={`p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm border-t-4 ${i === 0 ? "border-t-salmon-500" : i === 1 ? "border-t-blue-500" : "border-t-green-500"}`}
-                    >
-                      {i === 0 ? (
-                        <TrendingUp className="text-salmon-500 mb-3" />
-                      ) : i === 1 ? (
-                        <MapPin className="text-blue-500 mb-3" />
-                      ) : (
-                        <ShieldAlert className="text-green-500 mb-3" />
-                      )}
-                      <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2">
-                        {item.title}
-                      </h4>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                        {item.desc}
-                      </p>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* --- RES TAB 2: COMPETITOR DATA --- */}
-            {activeResearchTab === "competitor" && (
-              <motion.div
-                key="comp"
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, y: -10 }}
-                variants={fadeInUp}
-              >
-                <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm w-full overflow-x-auto">
-                  <table className="w-full min-w-[700px] text-sm text-left">
-                    <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 uppercase font-bold text-[10px] md:text-xs">
-                      <tr>
-                        <th className="px-4 md:px-6 py-4">Brand</th>
-                        <th className="px-4 md:px-6 py-4">Segment</th>
-                        <th className="px-4 md:px-6 py-4">Price Range</th>
-                        <th className="px-4 md:px-6 py-4">Key Strength</th>
-                        <th className="px-4 md:px-6 py-4">Weakness</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                      {t.resCompetitors.map((comp, i) => (
-                        <tr
-                          key={i}
-                          className="hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                        >
-                          <td className="px-4 md:px-6 py-4 font-bold text-slate-900 dark:text-white whitespace-nowrap">
-                            {comp.brand}{" "}
-                            <span className="block text-[10px] font-normal text-slate-400 mt-1">
-                              {comp.rating} (Google)
-                            </span>
-                          </td>
-                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                            <span className="bg-slate-100 dark:bg-slate-700 px-2.5 py-1 rounded-md text-[10px] md:text-xs font-semibold">
-                              {comp.segment}
-                            </span>
-                          </td>
-                          <td className="px-4 md:px-6 py-4 font-medium whitespace-nowrap">
-                            {comp.price}
-                          </td>
-                          <td className="px-4 md:px-6 py-4 text-xs text-green-600 dark:text-green-400 min-w-[150px]">
-                            {comp.pro}
-                          </td>
-                          <td className="px-4 md:px-6 py-4 text-xs text-red-600 dark:text-red-400 min-w-[150px]">
-                            {comp.con}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </motion.div>
-            )}
-
-            {/* --- RES TAB 3: SWOT & STRATEGY --- */}
-            {activeResearchTab === "strategy" && (
-              <motion.div
-                key="strat"
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, y: -10 }}
-                variants={staggerContainer}
-                className="space-y-6"
-              >
-                <div className="grid md:grid-cols-2 gap-4">
-                  {/* S & W */}
-                  <motion.div
-                    variants={fadeInUp}
-                    className="bg-green-50/50 dark:bg-green-900/10 border border-green-200 dark:border-green-900/30 p-5 md:p-6 rounded-2xl"
-                  >
-                    <h4 className="font-serif text-xl md:text-2xl text-green-700 dark:text-green-500 mb-4">
-                      Strengths
-                    </h4>
-                    <ul className="space-y-3 text-xs md:text-sm text-slate-700 dark:text-slate-300">
-                      {t.resSwot.S.map((s, i) => (
-                        <li key={i} className="flex gap-2.5">
-                          <CheckCircle
-                            size={16}
-                            className="text-green-500 shrink-0 mt-0.5"
-                          />{" "}
-                          <span>{s}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                  <motion.div
-                    variants={fadeInUp}
-                    className="bg-red-50/50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 p-5 md:p-6 rounded-2xl"
-                  >
-                    <h4 className="font-serif text-xl md:text-2xl text-red-700 dark:text-red-500 mb-4">
-                      Weaknesses
-                    </h4>
-                    <ul className="space-y-3 text-xs md:text-sm text-slate-700 dark:text-slate-300">
-                      {t.resSwot.W.map((w, i) => (
-                        <li key={i} className="flex gap-2.5">
-                          <Lightbulb
-                            size={16}
-                            className="text-red-500 shrink-0 mt-0.5"
-                          />{" "}
-                          <span>{w}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-
-                  {/* O & T */}
-                  <motion.div
-                    variants={fadeInUp}
-                    className="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-900/30 p-5 md:p-6 rounded-2xl"
-                  >
-                    <h4 className="font-serif text-xl md:text-2xl text-blue-700 dark:text-blue-500 mb-4">
-                      Opportunities
-                    </h4>
-                    <ul className="space-y-3 text-xs md:text-sm text-slate-700 dark:text-slate-300">
-                      {t.resSwot.O.map((o, i) => (
-                        <li key={i} className="flex gap-2.5">
-                          <Target
-                            size={16}
-                            className="text-blue-500 shrink-0 mt-0.5"
-                          />{" "}
-                          <span>{o}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                  <motion.div
-                    variants={fadeInUp}
-                    className="bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 p-5 md:p-6 rounded-2xl"
-                  >
-                    <h4 className="font-serif text-xl md:text-2xl text-amber-700 dark:text-amber-500 mb-4">
-                      Threats
-                    </h4>
-                    <ul className="space-y-3 text-xs md:text-sm text-slate-700 dark:text-slate-300">
-                      {t.resSwot.T.map((t, i) => (
-                        <li key={i} className="flex gap-2.5">
-                          <ShieldAlert
-                            size={16}
-                            className="text-amber-500 shrink-0 mt-0.5"
-                          />{" "}
-                          <span>{t}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                </div>
-
-                <motion.div
-                  variants={fadeInUp}
-                  className="mt-6 md:mt-8 p-5 md:p-6 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl shadow-xl"
-                >
-                  <h4 className="font-serif text-lg md:text-xl text-salmon-400 mb-2 md:mb-3">
-                    Strategic Conclusion
-                  </h4>
-                  <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
-                    {t.resStrategy}
-                  </p>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </section>
-        {renderCTA()}
-      </main>
-    );
-  }
-
-  return null;
 }
